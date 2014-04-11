@@ -2,12 +2,13 @@ package org.adamp.jam.menu;
 
 import org.adamp.jam.Main;
 import org.adamp.jam.Resources;
-import org.newdawn.slick.Color;
+import org.adamp.jam.game.*;
+import org.adamp.jam.game.Game;
 import org.newdawn.slick.*;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.state.transition.FadeInTransition;
+import org.newdawn.slick.state.transition.FadeOutTransition;
 
 
 /**
@@ -15,6 +16,7 @@ import org.newdawn.slick.state.StateBasedGame;
  */
 public class MainMenu extends BasicGameState {
     public static final int ID = 0;
+    private StateBasedGame game;
 
     private Image doge;
     private org.newdawn.slick.Font font;
@@ -28,6 +30,7 @@ public class MainMenu extends BasicGameState {
 
     @Override
     public void init(GameContainer gameContainer, StateBasedGame stateBasedGame) throws SlickException {
+        game = stateBasedGame;
         doge = new Image("res/doge.png");
 
         try {
@@ -38,9 +41,9 @@ public class MainMenu extends BasicGameState {
 
         int mid = Main.WIDTH / 2;
         options = new MenuOption[]{
-                new MenuOption("Play", mid, (int) (Main.HEIGHT * 0.2), ID),
-                new MenuOption("About", mid, (int) (Main.HEIGHT * 0.5), About.ID),
-                new MenuOption("Exit", mid, (int) (Main.HEIGHT * 0.8), Quit.ID)};
+                new MenuOption("Play", mid - font.getWidth("Play")/2, (int) (Main.HEIGHT * 0.2), Game.ID),
+                new MenuOption("About", mid - font.getWidth("About")/2, (int) (Main.HEIGHT * 0.5), About.ID),
+                new MenuOption("Exit", mid - font.getWidth("Exit")/2, (int) (Main.HEIGHT * 0.8), Quit.ID)};
         selected = 0;
     }
 
@@ -65,18 +68,21 @@ public class MainMenu extends BasicGameState {
     }
 
     @Override
-    public void update(GameContainer gameContainer, StateBasedGame stateBasedGame, int i) throws SlickException {
-        Input in = gameContainer.getInput();
-        if (in.isKeyPressed(Input.KEY_UP)) {
+    public void keyPressed(int key, char c) {
+        if (key == Input.KEY_UP) {
             selected = (selected - 1) % options.length;
             if (selected < 0) {
                 selected = options.length - 1;
             }
-        } else if (in.isKeyPressed(Input.KEY_DOWN)) {
+        } else if (key == Input.KEY_DOWN) {
             selected = (selected + 1) % options.length;
-        } else if (in.isKeyPressed(Input.KEY_ENTER)) {
-            System.out.println(options[selected].getID());
-            stateBasedGame.enterState(options[selected].getID());
+        } else if (key == Input.KEY_ENTER) {
+            game.enterState(options[selected].getID(), new FadeOutTransition(Color.black),new FadeInTransition(Color.black));
         }
+    }
+
+    @Override
+    public void update(GameContainer gameContainer, StateBasedGame stateBasedGame, int i) throws SlickException {
+
     }
 }

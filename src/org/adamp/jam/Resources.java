@@ -1,10 +1,14 @@
 package org.adamp.jam;
 
-import org.newdawn.slick.TrueTypeFont;
+import org.newdawn.slick.*;
+import org.newdawn.slick.state.transition.FadeInTransition;
+import org.newdawn.slick.state.transition.FadeOutTransition;
 import org.newdawn.slick.util.ResourceLoader;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
 import java.io.InputStream;
 
 /**

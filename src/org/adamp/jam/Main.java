@@ -1,5 +1,7 @@
 package org.adamp.jam;
 
+import org.adamp.jam.game.*;
+import org.adamp.jam.game.Game;
 import org.adamp.jam.menu.About;
 import org.adamp.jam.menu.MainMenu;
 import org.adamp.jam.menu.Quit;
@@ -41,6 +43,7 @@ public class Main extends StateBasedGame {
         addState(new MainMenu());
         addState(new Quit());
         addState(new About());
+        addState(new Game());
 
         enterState(MainMenu.ID);
     }
