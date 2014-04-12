@@ -1,13 +1,10 @@
 package org.adamp.jam;
 
 import org.newdawn.slick.*;
-import org.newdawn.slick.state.transition.FadeInTransition;
-import org.newdawn.slick.state.transition.FadeOutTransition;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.util.ResourceLoader;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.Color;
 import java.awt.Font;
 import java.io.InputStream;
 
@@ -16,23 +13,35 @@ import java.io.InputStream;
  */
 public class Resources {
 
-    private static Font menuFont;
+    private static Font MENU_FONT;
+    public static Image BULLET_IMAGE;
+
 
     static {
         loadMenuFont();
+        loadBulletImage();
     }
 
     private static void loadMenuFont() {
         InputStream in = ResourceLoader.getResourceAsStream("res/menufont.ttf");
         try {
-            menuFont = Font.createFont(Font.TRUETYPE_FONT, in);
+            MENU_FONT = Font.createFont(Font.TRUETYPE_FONT, in);
         } catch (Exception e) {
-            menuFont = new JLabel().getFont();
+            MENU_FONT = new JLabel().getFont();
         }
     }
 
+    private static void loadBulletImage() {
+        try {
+            BULLET_IMAGE = new Image(8,8);
+            BULLET_IMAGE = new Image("res/bullet.png");
+        } catch (Exception e) {
+        }
+    }
+
+
     public static TrueTypeFont loadMenuFont(int size) {
-        Font awtFont2 = menuFont.deriveFont((float) size); // set font size
+        Font awtFont2 = MENU_FONT.deriveFont((float) size); // set font size
         return new TrueTypeFont(awtFont2, false);
     }
 }

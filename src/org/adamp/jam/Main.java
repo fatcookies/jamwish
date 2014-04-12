@@ -24,7 +24,7 @@ public class Main extends StateBasedGame {
 
     public static void main(String[] args) {
         try {
-            AppGameContainer game = new AppGameContainer(new Main("Make a Wish"));
+            AppGameContainer game = new AppGameContainer(new Main("Doge Killer"));
             game.setMaximumLogicUpdateInterval(60);
             game.setDisplayMode(WIDTH, HEIGHT, false);
             game.setTargetFrameRate(60);

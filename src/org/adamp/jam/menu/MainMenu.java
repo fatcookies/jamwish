@@ -51,7 +51,7 @@ public class MainMenu extends BasicGameState {
     @Override
     public void render(GameContainer gameContainer, StateBasedGame stateBasedGame, Graphics graphics) throws SlickException {
         graphics.setAntiAlias(true);
-        graphics.setBackground(new Color((int) (Math.random() * 256), (int) (Math.random() * 256), (int) (Math.random() * 256)));
+        graphics.setBackground(Color.pink);
         graphics.setFont(font);
         graphics.drawString("Make me a Wish!", 10, 10);
 

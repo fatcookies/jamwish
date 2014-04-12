@@ -13,6 +13,8 @@ import org.newdawn.slick.tiled.TiledMap;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by adam on 11/04/14.
@@ -25,13 +27,18 @@ public class Game extends BasicGameState {
     private ArrayList<Rectangle> collide;
     private StateBasedGame game;
 
-    private Player player;
+    private UserPlayer player;
+    private Image crossHair;
 
 
-    private int camx;
-    private int maxx, maxy;
-    public static final int SCREEN_POS = 10;
+    private float camx;
+    private float camy;
+    private int crossX;
+    private int crossY;
+    public static final int SCREEN_POS = 2;
 
+    private List<Player> killers;
+    private int killerTime = 0;
 
     @Override
     public int getID() {
@@ -41,13 +48,16 @@ public class Game extends BasicGameState {
     @Override
     public void init(GameContainer gameContainer, StateBasedGame stateBasedGame) throws SlickException {
         game = stateBasedGame;
-        player = new Player(new Image("res/worm.png"),
-                (gameContainer.getWidth() / SCREEN_POS), gameContainer.getHeight() / 2);
         loadmap();
+        player = new UserPlayer(new Image("res/worm.png"),
+                (gameContainer.getWidth() / SCREEN_POS), gameContainer.getHeight() / 2,
+                map.getWidth() * map.getTileWidth(), map.getHeight() * map.getTileWidth());
+        crossHair = new Image("res/crosshair.png");
+
+        killers = new ArrayList<Player>();
 
 
-        maxx = map.getWidth() * map.getTileWidth();
-        maxy = map.getHeight() * map.getTileHeight();
+        killers.add(player);
 
     }
 
@@ -57,7 +67,7 @@ public class Game extends BasicGameState {
 
         for (int i = 0; i < map.getWidth(); i++) {
             for (int j = 0; j < map.getHeight(); j++) {
-                int id = map.getTileId(i, j, 0);
+                int id = map.getTileId(i, j, 1);
                 if (id == 1 || id == 6) {
                     collide.add(new Rectangle(i * 16, j * 16, 16, 16));
                 }
@@ -66,26 +76,79 @@ public class Game extends BasicGameState {
     }
 
 
+    public float getMapWidth() {
+        return map.getWidth() * map.getTileWidth();
+    }
+
+    public float getMapHeight() {
+        return map.getHeight() * map.getTileHeight();
+    }
+
     @Override
     public void keyPressed(int key, char c) {
         if (key == Input.KEY_ESCAPE) {
             game.enterState(MainMenu.ID, new FadeOutTransition(Color.black), new FadeInTransition(Color.black));
         }
-
     }
 
+    @Override
+    public void mouseMoved(int oldx, int oldy, int newx, int newy) {
+        crossX = newx - crossHair.getWidth() / 2;
+        crossY = newy - crossHair.getHeight() / 2;
+        player.crossHairX = crossX;
+        player.crossHairY = crossY;
+    }
 
+    @Override
+    public void mousePressed(int button, int x, int y) {
+        player.shoot(x + camx, y);
+    }
 
     @Override
     public void update(GameContainer gameContainer, StateBasedGame stateBasedGame, int i) throws SlickException {
         camx = player.x - gameContainer.getWidth() / SCREEN_POS;
-        player.update(gameContainer,stateBasedGame,i,collide);
+        camy = player.y - gameContainer.getHeight();
+
+        addEnemy(i);
+
+
+        Iterator<Player> it = killers.iterator();
+        while (it.hasNext()) {
+            Player player = it.next();
+            if (!player.isAlive()) {
+                it.remove();
+            } else {
+                player.update(gameContainer, stateBasedGame, i, collide, killers);
+            }
+        }
+
+
+    }
+
+    private void addEnemy(int delta) throws SlickException {
+        killerTime += delta;
+        if (killerTime > 5000) {
+            Player p = new NPCPlayer(new Image("res/worm.png"),
+                    (int) (Math.random() * map.getWidth() * map.getTileWidth()),
+                    (int) (Math.random() * map.getHeight() * map.getTileWidth()),
+                    map.getWidth() * map.getTileWidth(), map.getHeight() * map.getTileWidth()
+                    , player);
+            killers.add(p);
+            killerTime = 0;
+        }
     }
 
     @Override
     public void render(GameContainer gc, StateBasedGame stateBasedGame, Graphics graphics) throws SlickException {
         graphics.translate(-camx, 0);
         map.render(0, 0);
-        player.render();
+
+        for (Player player : killers) {
+            player.render();
+        }
+
+
+        graphics.resetTransform();
+        crossHair.draw(crossX, crossY);
     }
 }
