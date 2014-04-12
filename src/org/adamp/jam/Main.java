@@ -1,11 +1,12 @@
 package org.adamp.jam;
 
-import org.adamp.jam.game.*;
 import org.adamp.jam.game.Game;
 import org.adamp.jam.menu.About;
 import org.adamp.jam.menu.MainMenu;
 import org.adamp.jam.menu.Quit;
-import org.newdawn.slick.*;
+import org.newdawn.slick.AppGameContainer;
+import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 /**
@@ -16,8 +17,6 @@ public class Main extends StateBasedGame {
     public static final int WIDTH = 640;
     public static final int HEIGHT = 480;
 
-    private Animation pac;
-    private double x, y = 0.0;
 
     public Main(String title) {
         super(title);
