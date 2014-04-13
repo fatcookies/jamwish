@@ -31,14 +31,14 @@ public class NPCPlayer extends Player {
         fire(i);
         super.update(gameContainer, stateBasedGame, i, collide, otherPlayers);
         moveToTarget();
-        dx = speed;
+       // dx = speed;
     }
 
     private void moveToTarget() {
         double r = Math.random();
 
         if (r > 0.2) {
-            if (target.x + (distance * getWidth()) >= x) {
+            if (target.x + (distance * getWidth()) > x) {
                 dx = speed;
             } else if (target.x + (distance * getWidth()) < x) {
                 dx = -speed;

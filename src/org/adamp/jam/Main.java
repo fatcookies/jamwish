@@ -10,6 +10,8 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
+import java.io.File;
+
 /**
  * Created by adam on 11/04/14.
  */
@@ -24,7 +26,10 @@ public class Main extends StateBasedGame {
     }
 
     public static void main(String[] args) {
+
         try {
+            System.setProperty("org.lwjgl.librarypath", new File("lib").getAbsolutePath());
+
             AppGameContainer game = new AppGameContainer(new Main("Doge Killer"));
             game.setMaximumLogicUpdateInterval(60);
             game.setDisplayMode(WIDTH, HEIGHT, false);

@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Class-Path: lib/slick.jar lib/tinylinepp.jar lib/natives-windows.jar l
+ ib/natives-linux.jar lib/natives-mac.jar lib/lwjgl_util_applet.jar li
+ b/lwjgl_util.jar lib/lwjgl.jar lib/jorbis-0.0.15.jar lib/jogg-0.0.7.j
+ ar lib/jnlp.jar lib/jinput.jar lib/ibxm.jar
+Main-Class: org.adamp.jam.Main
+
