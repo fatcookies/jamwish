@@ -30,7 +30,7 @@ public class NPCPlayer extends Player {
                        List<Player> otherPlayers) throws SlickException {
         fire(i);
         super.update(gameContainer, stateBasedGame, i, collide, otherPlayers);
-        aaaaaamoveToTarget();
+        moveToTarget();
         dx = speed;
     }
 
