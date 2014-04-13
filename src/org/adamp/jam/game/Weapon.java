@@ -1,9 +1,9 @@
 package org.adamp.jam.game;
 
 import org.adamp.jam.Main;
-import org.adamp.jam.Resources;
-import org.newdawn.slick.*;
+import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import java.awt.*;
@@ -22,17 +22,18 @@ public class Weapon extends MovableObject {
     private Image normalGun;
     private Image reversedGun;
 
-    public Weapon(MovableObject owner) throws SlickException{
+    public Weapon(MovableObject owner) throws SlickException {
         super(new Image("res/gun.png")
                 , owner.x, owner.y, owner.maxX, owner.maxY);
         normalGun = sprite;
-        reversedGun = sprite.getFlippedCopy(false,true);
+        reversedGun = sprite.getFlippedCopy(false, true);
         this.owner = owner;
     }
 
     public void fire(float x, float y) {
         float initx = this.x / Main.WIDTH - this.x;
         float inity = this.y / Main.HEIGHT - this.y;
+        setRotation(x, y);
 
         bullets.add(new Bullet(owner, this, initx, inity, x, y));
     }
@@ -45,7 +46,7 @@ public class Weapon extends MovableObject {
         float rot = (float) Math.toDegrees(Math.atan2(b, a));
         sprite.setRotation(rot);
 
-        if(rot < -90 || rot > 90) {
+        if (rot < -90 || rot > 90) {
             sprite = reversedGun;
         } else {
             sprite = normalGun;
@@ -55,9 +56,10 @@ public class Weapon extends MovableObject {
     @Override
     public void render() {
         super.render();
-        for (Bullet b : bullets) {
-            b.render();
-        }
+
+            for (Bullet b : bullets) {
+                b.render();
+            }
     }
 
     @Override
@@ -67,14 +69,16 @@ public class Weapon extends MovableObject {
         x = owner.x;
         y = owner.y + owner.getHeight() / 2;
 
-        Iterator<Bullet> it = bullets.iterator();
-        while (it.hasNext()) {
-            Bullet b = it.next();
-            b.update(gameContainer, stateBasedGame, i, collide, players);
 
-            if (b.x < 0 || b.y < 0 || b.x > maxX || b.y > maxY) {
-                it.remove();
+            Iterator<Bullet> it = bullets.iterator();
+            while (it.hasNext()) {
+                Bullet b = it.next();
+                b.update(gameContainer, stateBasedGame, i, collide, players);
+
+                if (b.x < 0 || b.y < 0 || b.x > maxX || b.y > maxY || b.dx == 0) {
+                    it.remove();
+                }
             }
-        }
+
     }
 }

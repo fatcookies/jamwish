@@ -20,17 +20,18 @@ public class UserPlayer extends Player {
     public float crossHairX;
     public float crossHairY;
 
+    private StateBasedGame game;
+
     public UserPlayer(Image doge, int x, int y, int maxX, int maxY) throws SlickException{
         super(doge, x, y, maxX, maxY);
     }
 
-    public void setRotation(float crossHairX, float crossHairY) {
-        this.crossHairX = crossHairX;
-        this.crossHairY = crossHairY;
-    }
+
     @Override
     public void update(GameContainer gameContainer, StateBasedGame stateBasedGame, int i, ArrayList<Rectangle> collide,
     List<Player> players) throws SlickException {
+        game = stateBasedGame;
+
         Input in = gameContainer.getInput();
         if (in.isKeyDown(Input.KEY_D)) {
             dx = speed;

@@ -26,6 +26,7 @@ public class Game extends BasicGameState {
     private TiledMap map;
     private ArrayList<Rectangle> collide;
     private StateBasedGame game;
+    private HUD hud;
 
     private UserPlayer player;
     private Image crossHair;
@@ -45,23 +46,20 @@ public class Game extends BasicGameState {
         return ID;
     }
 
+
     @Override
     public void init(GameContainer gameContainer, StateBasedGame stateBasedGame) throws SlickException {
         game = stateBasedGame;
-        loadmap();
-        player = new UserPlayer(new Image("res/worm.png"),
-                (gameContainer.getWidth() / SCREEN_POS), gameContainer.getHeight() / 2,
-                map.getWidth() * map.getTileWidth(), map.getHeight() * map.getTileWidth());
+        loadMap();
         crossHair = new Image("res/crosshair.png");
-
         killers = new ArrayList<Player>();
+        hud = new HUD();
 
-
-        killers.add(player);
+        reset(gameContainer);
 
     }
 
-    private void loadmap() throws SlickException {
+    private void loadMap() throws SlickException {
         map = new TiledMap("res/level.tmx");
         collide = new ArrayList<Rectangle>();
 
@@ -112,10 +110,20 @@ public class Game extends BasicGameState {
         addEnemy(i);
 
 
+        if (!player.isAlive()) {
+            reset(gameContainer);
+            stateBasedGame.enterState(GameOver.ID, new FadeOutTransition(Color.black), new FadeInTransition(Color.black));
+        }
+
+
         Iterator<Player> it = killers.iterator();
         while (it.hasNext()) {
             Player player = it.next();
             if (!player.isAlive()) {
+
+                if (this.player.bulletBelongs(player.getBulletKilled())) { // only increase count if player kills
+                    hud.addKill();
+                }
                 it.remove();
             } else {
                 player.update(gameContainer, stateBasedGame, i, collide, killers);
@@ -125,13 +133,26 @@ public class Game extends BasicGameState {
 
     }
 
+    private void reset(GameContainer gameContainer) throws SlickException {
+        hud.reset();
+        player = new UserPlayer(new Image("res/worm.png"),
+                (gameContainer.getWidth() / SCREEN_POS), gameContainer.getHeight() / 2,
+                map.getWidth() * map.getTileWidth(), map.getHeight() * map.getTileWidth());
+        killers.clear();
+        killers.add(player);
+
+        for (int i = 0; i < 30; i++) {
+            addEnemy(5001);
+        }
+    }
+
     private void addEnemy(int delta) throws SlickException {
         killerTime += delta;
         if (killerTime > 5000) {
             Player p = new NPCPlayer(new Image("res/worm.png"),
                     (int) (Math.random() * map.getWidth() * map.getTileWidth()),
-                    (int) (Math.random() * map.getHeight() * map.getTileWidth()),
-                    map.getWidth() * map.getTileWidth(), map.getHeight() * map.getTileWidth()
+                    (int) (Math.random() * map.getHeight() * map.getTileHeight()),
+                    map.getWidth() * map.getTileWidth(), map.getHeight() * map.getTileHeight()
                     , player);
             killers.add(p);
             killerTime = 0;
@@ -145,10 +166,13 @@ public class Game extends BasicGameState {
 
         for (Player player : killers) {
             player.render();
+
         }
+
 
 
         graphics.resetTransform();
         crossHair.draw(crossX, crossY);
+        hud.render(graphics, gc.getWidth(), gc.getHeight());
     }
 }

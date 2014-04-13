@@ -23,6 +23,7 @@ public class Bullet extends MovableObject {
         this.owner = owner;
         this.x = source.x;
         this.y = source.y;
+        this.dx = 0.1f;
 
         calculateProjectory(initX, initY, targetX, targetY);
     }
@@ -37,6 +38,9 @@ public class Bullet extends MovableObject {
 
     }
 
+    public MovableObject getOwner() {
+        return owner;
+    }
 
     @Override
     public void update(GameContainer gameContainer, StateBasedGame stateBasedGame, int i,
@@ -47,15 +51,15 @@ public class Bullet extends MovableObject {
 
         Rectangle bounds = getBounds();
 
-        synchronized (players) {
+
         Iterator<Player> it = players.iterator();
         while (it.hasNext()) {
             Player p = it.next();
             if (bounds.intersects(p.getBounds()) && p != owner) {
                 x = -1;
-                p.kill();
+                dx = 0;
+                p.kill(this);
             }
-        }
         }
 
 

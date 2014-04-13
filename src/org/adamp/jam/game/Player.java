@@ -1,11 +1,12 @@
 package org.adamp.jam.game;
 
+import org.adamp.jam.Main;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
-import java.awt.Rectangle;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,10 +18,11 @@ public class Player extends MovableObject {
     private boolean alive = true;
     protected boolean jumping = false;
     private int jumpdy = 0;
+    private Bullet bullet;
 
     protected Weapon weapon;
 
-    public Player(Image doge, int x, int y, int maxX, int maxY) throws SlickException{
+    public Player(Image doge, int x, int y, int maxX, int maxY) throws SlickException {
         super(doge, x, y, maxX, maxY);
         weapon = new Weapon(this);
     }
@@ -32,12 +34,17 @@ public class Player extends MovableObject {
         }
     }
 
-    public void kill() {
+    public void kill(Bullet b) {
         alive = false;
+        bullet = b;
     }
 
     public boolean isAlive() {
         return alive;
+    }
+
+    public Bullet getBulletKilled() {
+        return bullet;
     }
 
     private void handleJump() {
@@ -60,6 +67,10 @@ public class Player extends MovableObject {
         weapon.fire(targetX, targetY);
     }
 
+    public boolean bulletBelongs(Bullet b) {
+        return b.getOwner() == this;
+    }
+
     @Override
     public void render() {
         super.render();
@@ -76,6 +87,10 @@ public class Player extends MovableObject {
 
         y += dy;
         x += dx;
+
+        if(y > Main.HEIGHT) {
+            kill(new Bullet(this,this,0,0,0,0));
+        }
 
         weapon.update(gameContainer, stateBasedGame, i, collide, otherPlayers);
     }

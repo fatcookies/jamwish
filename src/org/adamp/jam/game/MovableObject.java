@@ -84,11 +84,11 @@ public abstract class MovableObject {
             }
         }
 
-        if (x > maxX) {
+        if (x >= maxX) {
             dx = 0;
             x -= 10;
         }
-        if (x < 0) {
+        if (x <= 0) {
             dx = 0;
             x += 10;
         }
